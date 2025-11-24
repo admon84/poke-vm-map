@@ -1,21 +1,46 @@
-import { APIProvider, Map as GoogleMap } from '@vis.gl/react-google-maps'
+import {
+  APIProvider,
+  Map as GoogleMap,
+  useMap
+} from '@vis.gl/react-google-maps'
+import { useEffect } from 'react'
 
 interface MapProps {
   apiKey: string
+  center: { lat: number; lng: number }
+  zoom: number
 }
 
-export function Map({ apiKey }: MapProps) {
-  // Center on the United States
-  const defaultCenter = { lat: 39.8283, lng: -98.5795 }
+function MapController({
+  center,
+  zoom
+}: {
+  center: { lat: number; lng: number }
+  zoom: number
+}) {
+  const map = useMap()
 
+  useEffect(() => {
+    if (map) {
+      map.panTo(center)
+      map.setZoom(zoom)
+    }
+  }, [map, center, zoom])
+
+  return null
+}
+
+export function Map({ apiKey, center, zoom }: MapProps) {
   return (
     <APIProvider apiKey={apiKey}>
-      <div style={{ height: '100vh', width: '100%' }}>
+      <div style={{ height: '100%', width: '100%', flex: 1 }}>
         <GoogleMap
-          defaultCenter={defaultCenter}
-          defaultZoom={5}
+          defaultCenter={center}
+          defaultZoom={zoom}
           gestureHandling='greedy'
-        />
+        >
+          <MapController center={center} zoom={zoom} />
+        </GoogleMap>
       </div>
     </APIProvider>
   )
