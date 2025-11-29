@@ -10,6 +10,7 @@ function App() {
   const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY
   const [mapCenter, setMapCenter] = useState({ lat: 39.8283, lng: -98.5795 })
   const [mapZoom, setMapZoom] = useState(5)
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null)
 
   // Use GeoJSON data for Pokemon vending machines
   const { pins, loading: pinsLoading, error: pinsError } = useGeoJSONPins()
@@ -30,6 +31,7 @@ function App() {
             lat: position.coords.latitude,
             lng: position.coords.longitude
           }
+          setUserLocation(userLocation)
           setMapCenter(userLocation)
           setMapZoom(13)
           toast.success('Location found!', {
@@ -53,11 +55,12 @@ function App() {
 
               if (data.latitude && data.longitude) {
                 toast.dismiss(ipLoadingToast)
-                const userLocation = {
+                const ipLocation = {
                   lat: data.latitude,
                   lng: data.longitude
                 }
-                setMapCenter(userLocation)
+                setUserLocation(ipLocation)
+                setMapCenter(ipLocation)
                 setMapZoom(12)
                 toast.success(`Located in ${data.city}, ${data.region}`, {
                   description: 'Using IP-based location (approximate)'
@@ -162,6 +165,7 @@ function App() {
         zoom={mapZoom}
         pins={pins}
         pinsLoading={pinsLoading}
+        userLocation={userLocation}
       />
       <Toaster position='bottom-center' />
     </div>

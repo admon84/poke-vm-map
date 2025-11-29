@@ -6,6 +6,7 @@ import {
 } from '@vis.gl/react-google-maps'
 import { useEffect, useState, useCallback } from 'react'
 import { POIMarker } from './POIMarker'
+import { UserLocationMarker } from './UserLocationMarker'
 import { VendingMachinePin } from '../types/poi'
 import { useViewportPins } from '../hooks/useViewportPins'
 
@@ -15,6 +16,7 @@ interface MapProps {
   zoom: number
   pins: VendingMachinePin[]
   pinsLoading: boolean
+  userLocation: { lat: number; lng: number } | null
 }
 
 interface Bounds {
@@ -75,7 +77,7 @@ function MapController({
   return null
 }
 
-export function Map({ apiKey, center, zoom, pins, pinsLoading }: MapProps) {
+export function Map({ apiKey, center, zoom, pins, pinsLoading, userLocation }: MapProps) {
   const [selectedMarkerId, setSelectedMarkerId] = useState<string | null>(null)
   const [bounds, setBounds] = useState<Bounds | null>(null)
   const [currentZoom, setCurrentZoom] = useState(zoom)
@@ -114,6 +116,9 @@ export function Map({ apiKey, center, zoom, pins, pinsLoading }: MapProps) {
             onBoundsChanged={handleBoundsChanged}
             onZoomChanged={handleZoomChanged}
           />
+
+          {/* User location marker */}
+          {userLocation && <UserLocationMarker position={userLocation} />}
 
           {!pinsLoading &&
             visiblePins.map(pin => (
