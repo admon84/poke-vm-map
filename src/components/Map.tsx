@@ -8,7 +8,6 @@ import { useEffect, useState, useCallback } from 'react'
 import { POIMarker } from './POIMarker'
 import { VendingMachinePin } from '../types/poi'
 import { useViewportPins } from '../hooks/useViewportPins'
-import { minimalMapStyle } from '../styles/mapStyles'
 
 interface MapProps {
   apiKey: string
@@ -29,14 +28,12 @@ function MapController({
   center,
   zoom,
   onBoundsChanged,
-  onZoomChanged,
-  mapStyle
+  onZoomChanged
 }: {
   center: { lat: number; lng: number }
   zoom: number
   onBoundsChanged: (bounds: Bounds | null) => void
   onZoomChanged: (zoom: number) => void
-  mapStyle: google.maps.MapTypeStyle[]
 }) {
   const map = useMap()
 
@@ -46,15 +43,6 @@ function MapController({
       map.setZoom(zoom)
     }
   }, [map, center, zoom])
-
-  // Apply custom styles
-  useEffect(() => {
-    if (map && mapStyle) {
-      map.setOptions({
-        styles: mapStyle
-      })
-    }
-  }, [map, mapStyle])
 
   useEffect(() => {
     if (!map) return
@@ -125,7 +113,6 @@ export function Map({ apiKey, center, zoom, pins, pinsLoading }: MapProps) {
             zoom={zoom}
             onBoundsChanged={handleBoundsChanged}
             onZoomChanged={handleZoomChanged}
-            mapStyle={minimalMapStyle}
           />
 
           {!pinsLoading &&

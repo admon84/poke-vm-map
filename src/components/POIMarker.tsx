@@ -1,7 +1,7 @@
 import { AdvancedMarker, InfoWindow } from '@vis.gl/react-google-maps'
 import { VendingMachinePin } from '../types/poi'
 import { memo } from 'react'
-import { formatAddressLines } from '../utils/addressParser'
+import { formatAddressLines } from '../utils/addressParser.tsx'
 
 interface POIMarkerProps {
   pin: VendingMachinePin

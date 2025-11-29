@@ -54,7 +54,7 @@ export function parseAddress(address: string): ParsedAddress | null {
  * @param address - Full address string
  * @returns JSX element with formatted address
  */
-export function formatAddressLines(address: string): JSX.Element {
+export function formatAddressLines(address: string): React.ReactNode {
   const parsed = parseAddress(address)
 
   if (!parsed) {
