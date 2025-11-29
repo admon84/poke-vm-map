@@ -21,10 +21,11 @@ function App() {
 
   const handleLocateUser = async () => {
     if ('geolocation' in navigator) {
-      toast.loading('Finding your location...')
+      const loadingToast = toast.loading('Finding your location...')
 
       navigator.geolocation.getCurrentPosition(
         position => {
+          toast.dismiss(loadingToast)
           const userLocation = {
             lat: position.coords.latitude,
             lng: position.coords.longitude
@@ -42,10 +43,16 @@ function App() {
           if (error.code === 2) {
             try {
               console.log('Trying IP-based geolocation fallback...')
+              toast.dismiss(loadingToast)
+              const ipLoadingToast = toast.loading(
+                'Trying IP-based location...'
+              )
+
               const response = await fetch('https://ipapi.co/json/')
               const data = await response.json()
 
               if (data.latitude && data.longitude) {
+                toast.dismiss(ipLoadingToast)
                 const userLocation = {
                   lat: data.latitude,
                   lng: data.longitude
@@ -57,11 +64,13 @@ function App() {
                 })
                 return
               }
+              toast.dismiss(ipLoadingToast)
             } catch (fallbackError) {
               console.error('IP geolocation fallback failed:', fallbackError)
             }
           }
 
+          toast.dismiss(loadingToast)
           let errorMessage = ''
 
           switch (error.code) {
@@ -154,7 +163,7 @@ function App() {
         pins={pins}
         pinsLoading={pinsLoading}
       />
-      <Toaster />
+      <Toaster position='bottom-center' />
     </div>
   )
 }

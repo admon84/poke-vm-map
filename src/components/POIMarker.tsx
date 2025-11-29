@@ -43,6 +43,7 @@ export const POIMarker = memo(function POIMarker({
         <InfoWindow
           position={pin.location}
           onCloseClick={onClose}
+          pixelOffset={[0, -55]}
           headerContent={
             <div
               style={{
