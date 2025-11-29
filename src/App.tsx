@@ -3,11 +3,17 @@ import { Navbar } from './components/Navbar'
 import { Toaster } from '@/components/ui/sonner'
 import { toast } from 'sonner'
 import { useState } from 'react'
+import { useGeoJSONPins } from './hooks/useGeoJSONPins'
+import { useAuth } from './hooks/useAuth'
 
 function App() {
   const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY
   const [mapCenter, setMapCenter] = useState({ lat: 39.8283, lng: -98.5795 })
   const [mapZoom, setMapZoom] = useState(5)
+
+  // Use GeoJSON data for Pokemon vending machines
+  const { pins, loading: pinsLoading, error: pinsError } = useGeoJSONPins()
+  const { user, loading: authLoading } = useAuth()
 
   if (!apiKey) {
     return <div>Error: Google Maps API key not found</div>
@@ -24,7 +30,7 @@ function App() {
             lng: position.coords.longitude
           }
           setMapCenter(userLocation)
-          setMapZoom(13) // Zoom in when finding user location
+          setMapZoom(13)
           toast.success('Location found!', {
             description: 'Map centered on your location'
           })
@@ -34,7 +40,6 @@ function App() {
 
           // Try IP-based geolocation as fallback
           if (error.code === 2) {
-            // POSITION_UNAVAILABLE
             try {
               console.log('Trying IP-based geolocation fallback...')
               const response = await fetch('https://ipapi.co/json/')
@@ -57,19 +62,18 @@ function App() {
             }
           }
 
-          // Show error message if both methods failed
           let errorMessage = ''
 
           switch (error.code) {
-            case 1: // PERMISSION_DENIED
+            case 1:
               errorMessage =
                 'Please allow location access in your browser settings.'
               break
-            case 2: // POSITION_UNAVAILABLE
+            case 2:
               errorMessage =
                 'Location unavailable. Check Location Services in System Settings.'
               break
-            case 3: // TIMEOUT
+            case 3:
               errorMessage = 'Location request timed out. Please try again.'
               break
             default:
@@ -93,6 +97,33 @@ function App() {
     }
   }
 
+  // Show loading state
+  if (authLoading) {
+    return (
+      <div className='flex items-center justify-center h-screen'>
+        <div className='text-lg'>Loading...</div>
+      </div>
+    )
+  }
+
+  // Show error if GeoJSON failed to load
+  if (pinsError) {
+    return (
+      <div className='flex flex-col items-center justify-center h-screen gap-4'>
+        <div className='text-xl text-red-600'>
+          Failed to load vending machine data
+        </div>
+        <div className='text-sm text-gray-600'>{pinsError.message}</div>
+        <button
+          onClick={() => window.location.reload()}
+          className='px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600'
+        >
+          Retry
+        </button>
+      </div>
+    )
+  }
+
   return (
     <div
       style={{
@@ -102,8 +133,27 @@ function App() {
         flexDirection: 'column'
       }}
     >
-      <Navbar onLocateUser={handleLocateUser} />
-      <Map apiKey={apiKey} center={mapCenter} zoom={mapZoom} />
+      <Navbar onLocateUser={handleLocateUser} user={user} />
+
+      {pinsLoading && (
+        <div className='absolute top-20 left-1/2 transform -translate-x-1/2 z-[1001] bg-white px-4 py-2 rounded-lg shadow-lg'>
+          <div className='flex items-center gap-2'>
+            <div className='animate-spin h-4 w-4 border-2 border-blue-500 border-t-transparent rounded-full' />
+            <span className='text-sm font-medium'>
+              Loading {pins.length > 0 ? `${pins.length}` : ''} Pokemon vending
+              machines...
+            </span>
+          </div>
+        </div>
+      )}
+
+      <Map
+        apiKey={apiKey}
+        center={mapCenter}
+        zoom={mapZoom}
+        pins={pins}
+        pinsLoading={pinsLoading}
+      />
       <Toaster />
     </div>
   )

@@ -1,14 +1,35 @@
-export interface PointOfInterest {
+import { Timestamp } from 'firebase/firestore'
+
+export interface VendingMachinePin {
   id: string
   name: string
-  category?: 'restaurant' | 'park' | 'landmark' | 'attraction' | 'custom'
-  position: {
+  location: {
     lat: number
     lng: number
   }
+  address?: string
   description?: string
-  image?: string
-  website?: string
+  createdBy: string // user ID
+  createdAt: Timestamp
+  lastUpdated: Timestamp
+  photoUrl?: string
+  verified: boolean
+  retailer?: string // Store name (e.g., "Safeway", "Fred Meyer")
+}
+
+export interface PinSubmission {
+  id: string
+  pinId: string // reference to vending machine
+  userId: string
+  userName?: string
+  type: 'restock' | 'success' | 'issue' | 'other'
+  timestamp: Timestamp
+  data: {
+    restockItems?: string[]
+    successNote?: string
+    issueDescription?: string
+    notes?: string
+  }
 }
 
 export interface MarkerStyle {
@@ -18,3 +39,5 @@ export interface MarkerStyle {
   scale?: number
 }
 
+// Legacy type alias for compatibility
+export type PointOfInterest = VendingMachinePin

@@ -1,81 +1,223 @@
-import { AdvancedMarker, Pin, InfoWindow } from '@vis.gl/react-google-maps'
-import { PointOfInterest, MarkerStyle } from '../types/poi'
+import { AdvancedMarker, InfoWindow } from '@vis.gl/react-google-maps'
+import { VendingMachinePin } from '../types/poi'
+import { memo } from 'react'
 
 interface POIMarkerProps {
-  poi: PointOfInterest
+  pin: VendingMachinePin
   isSelected: boolean
   onSelect: () => void
   onClose: () => void
-  markerStyle?: MarkerStyle
 }
 
-export function POIMarker({
-  poi,
+export const POIMarker = memo(function POIMarker({
+  pin,
   isSelected,
   onSelect,
-  onClose,
-  markerStyle
+  onClose
 }: POIMarkerProps) {
-  const defaultStyle: MarkerStyle = {
-    background: '#FF0000',
-    borderColor: '#8B0000',
-    glyphColor: '#FFF',
-    scale: 1.0
-  }
-
-  const style = markerStyle || defaultStyle
+  // Custom Pokeball marker (no default style needed)
+  const markerContent = (
+    <img
+      src='/pokeball-pin.png'
+      alt='Pokemon Vending Machine'
+      style={{
+        width: '32px',
+        height: '50px',
+        cursor: 'pointer',
+        transition: 'transform 0.2s ease',
+        transform: isSelected ? 'scale(1.2)' : 'scale(1)'
+      }}
+      onMouseEnter={e => {
+        e.currentTarget.style.transform = 'scale(1.15)'
+      }}
+      onMouseLeave={e => {
+        e.currentTarget.style.transform = isSelected ? 'scale(1.2)' : 'scale(1)'
+      }}
+    />
+  )
 
   return (
-    <AdvancedMarker position={poi.position} onClick={onSelect}>
-      <Pin
-        background={style.background}
-        borderColor={style.borderColor}
-        glyphColor={style.glyphColor}
-        scale={style.scale}
-      />
+    <AdvancedMarker position={pin.location} onClick={onSelect}>
+      {markerContent}
       {isSelected && (
-        <InfoWindow position={poi.position} onCloseClick={onClose}>
-          <div
-            style={{
-              padding: '12px',
-              maxWidth: '250px'
-            }}
-          >
-            <h3 style={{ margin: '0 0 8px 0', fontSize: '16px' }}>
-              {poi.name}
-            </h3>
-            {poi.category && (
-              <span
+        <InfoWindow
+          position={pin.location}
+          onCloseClick={onClose}
+          headerContent={
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                margin: '-6px 0 0 0'
+              }}
+            >
+              <img
+                src='/pokeball-pin.png'
+                alt='Pokeball'
+                style={{ width: '16px' }}
+              />
+              <h3
                 style={{
-                  display: 'inline-block',
-                  padding: '2px 8px',
-                  backgroundColor: '#f0f0f0',
-                  borderRadius: '4px',
-                  fontSize: '12px',
-                  marginBottom: '8px'
+                  margin: 0,
+                  fontSize: '16px',
+                  fontWeight: '600',
+                  color: '#1a1a1a'
                 }}
               >
-                {poi.category}
-              </span>
+                Pokemon Vending Machine
+              </h3>
+            </div>
+          }
+        >
+          <div
+            style={{
+              maxWidth: '280px',
+              fontFamily: 'system-ui, -apple-system, sans-serif'
+            }}
+          >
+            {/* Retailer with icon */}
+            {pin.retailer && (
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '8px 0',
+                  borderBottom: '1px solid #f0f0f0'
+                }}
+              >
+                <span style={{ fontSize: '18px' }}>🏪</span>
+                <div>
+                  <div
+                    style={{
+                      fontSize: '12px',
+                      color: '#666',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.5px',
+                      fontWeight: '500'
+                    }}
+                  >
+                    Store
+                  </div>
+                  <div
+                    style={{
+                      fontSize: '14px',
+                      color: '#1a1a1a',
+                      fontWeight: '600'
+                    }}
+                  >
+                    {pin.retailer}
+                  </div>
+                </div>
+              </div>
             )}
-            {poi.description && (
-              <p style={{ margin: '8px 0', fontSize: '14px' }}>
-                {poi.description}
-              </p>
+
+            {/* Address with icon */}
+            {pin.address && (
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'start',
+                  gap: '8px',
+                  padding: '8px 0'
+                }}
+              >
+                <span style={{ fontSize: '18px' }}>📍</span>
+                <div>
+                  <div
+                    style={{
+                      fontSize: '12px',
+                      color: '#666',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.5px',
+                      fontWeight: '500',
+                      marginBottom: '4px'
+                    }}
+                  >
+                    Location
+                  </div>
+                  <div
+                    style={{
+                      fontSize: '13px',
+                      color: '#444',
+                      lineHeight: '1.4'
+                    }}
+                  >
+                    {pin.address}
+                  </div>
+                </div>
+              </div>
             )}
-            {poi.website && (
+
+            {/* Verified badge - more prominent */}
+            {/* {pin.verified && (
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: '8px 12px',
+                  backgroundColor: '#f0f9ff',
+                  borderLeft: '3px solid #4CAF50',
+                  borderRadius: '4px'
+                }}
+              >
+                <span style={{ fontSize: '16px', color: '#4CAF50' }}>✓</span>
+                <span
+                  style={{
+                    fontSize: '13px',
+                    color: '#2e7d32',
+                    fontWeight: '600'
+                  }}
+                >
+                  Verified Location
+                </span>
+              </div>
+            )} */}
+
+            {/* Action buttons */}
+            <div
+              style={{
+                display: 'flex',
+                gap: '8px',
+                paddingTop: '12px',
+                borderTop: '1px solid #f0f0f0'
+              }}
+            >
               <a
-                href={poi.website}
+                href={`https://www.google.com/maps/dir/?api=1&destination=${pin.location.lat},${pin.location.lng}`}
                 target='_blank'
                 rel='noopener noreferrer'
-                style={{ fontSize: '14px', color: '#1a73e8' }}
+                style={{
+                  flex: 1,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '6px',
+                  padding: '8px 12px',
+                  backgroundColor: '#4285f4',
+                  color: 'white',
+                  textDecoration: 'none',
+                  borderRadius: '6px',
+                  fontSize: '13px',
+                  fontWeight: '500',
+                  transition: 'background-color 0.2s',
+                  cursor: 'pointer'
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.backgroundColor = '#3367d6'
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.backgroundColor = '#4285f4'
+                }}
               >
-                Visit Website →
+                <span>Get Directions</span>
               </a>
-            )}
+            </div>
           </div>
         </InfoWindow>
       )}
     </AdvancedMarker>
   )
-}
+})
