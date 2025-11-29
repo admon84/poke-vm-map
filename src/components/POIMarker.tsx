@@ -76,7 +76,11 @@ export const POIMarker = memo(function POIMarker({
               <img
                 src='/pokeball-pin.png'
                 alt='Pokeball'
-                style={{ width: '16px' }}
+                style={{
+                  width: '16px',
+                  filter: 'drop-shadow(0 1px 1px rgba(0, 0, 0, 0.3))',
+                  margin: '0 2px'
+                }}
               />
               <h3
                 style={{
@@ -196,7 +200,7 @@ export const POIMarker = memo(function POIMarker({
                   textDecoration: 'none',
                   borderRadius: '6px',
                   fontSize: '14px',
-                  fontWeight: '500',
+                  fontWeight: '600',
                   transition: 'background-color 0.2s',
                   cursor: 'pointer'
                 }}
