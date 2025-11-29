@@ -17,6 +17,7 @@ interface MapProps {
   pins: VendingMachinePin[]
   pinsLoading: boolean
   userLocation: { lat: number; lng: number } | null
+  colorScheme: ColorScheme
 }
 
 interface Bounds {
@@ -83,7 +84,8 @@ export function Map({
   zoom,
   pins,
   pinsLoading,
-  userLocation
+  userLocation,
+  colorScheme
 }: MapProps) {
   const [selectedMarkerId, setSelectedMarkerId] = useState<string | null>(null)
   const [bounds, setBounds] = useState<Bounds | null>(null)
@@ -110,7 +112,7 @@ export function Map({
           defaultZoom={zoom}
           gestureHandling='greedy'
           mapId='e28565e73aadc71c448f1ec2'
-          colorScheme={ColorScheme.DARK}
+          colorScheme={colorScheme}
           disableDefaultUI={false}
           zoomControl={true}
           mapTypeControl={false}

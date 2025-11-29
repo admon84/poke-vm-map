@@ -5,6 +5,7 @@ import { toast } from 'sonner'
 import { useState } from 'react'
 import { useGeoJSONPins } from './hooks/useGeoJSONPins'
 import { useAuth } from './hooks/useAuth'
+import { useMapColorScheme } from './hooks/useMapColorScheme'
 
 function App() {
   const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY
@@ -18,6 +19,11 @@ function App() {
   // Use GeoJSON data for Pokemon vending machines
   const { pins, loading: pinsLoading, error: pinsError } = useGeoJSONPins()
   const { user, loading: authLoading } = useAuth()
+  const {
+    preference: mapColorScheme,
+    effectiveScheme,
+    setPreference: setMapColorScheme
+  } = useMapColorScheme()
 
   if (!apiKey) {
     return <div>Error: Google Maps API key not found</div>
@@ -148,7 +154,12 @@ function App() {
         flexDirection: 'column'
       }}
     >
-      <Navbar onLocateUser={handleLocateUser} user={user} />
+      <Navbar
+        onLocateUser={handleLocateUser}
+        user={user}
+        mapColorScheme={mapColorScheme}
+        onMapColorSchemeChange={setMapColorScheme}
+      />
 
       {pinsLoading && (
         <div className='absolute top-20 left-1/2 transform -translate-x-1/2 z-[1001] bg-white px-4 py-2 rounded-lg shadow-lg'>
@@ -169,6 +180,7 @@ function App() {
         pins={pins}
         pinsLoading={pinsLoading}
         userLocation={userLocation}
+        colorScheme={effectiveScheme}
       />
       <Toaster position='bottom-center' />
     </div>

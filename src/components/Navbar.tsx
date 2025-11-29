@@ -5,7 +5,9 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger
+  DropdownMenuTrigger,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem
 } from '@/components/ui/dropdown-menu'
 import { User } from 'firebase/auth'
 import { AuthDialog } from './AuthDialog'
@@ -16,9 +18,16 @@ import { toast } from 'sonner'
 interface NavbarProps {
   onLocateUser: () => void
   user: User | null
+  mapColorScheme: 'LIGHT' | 'DARK' | 'FOLLOW_SYSTEM'
+  onMapColorSchemeChange: (scheme: 'LIGHT' | 'DARK' | 'FOLLOW_SYSTEM') => void
 }
 
-export function Navbar({ onLocateUser, user }: NavbarProps) {
+export function Navbar({
+  onLocateUser,
+  user,
+  mapColorScheme,
+  onMapColorSchemeChange
+}: NavbarProps) {
   const [showAuthDialog, setShowAuthDialog] = useState(false)
   const { signOut } = useAuth()
 
@@ -46,6 +55,37 @@ export function Navbar({ onLocateUser, user }: NavbarProps) {
             >
               Find My Location
             </Button>
+
+            {/* Settings Menu */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant='outline' size='icon'>
+                  <span className='text-lg'>⚙️</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align='end'>
+                <DropdownMenuLabel>Map Theme</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuRadioGroup
+                  value={mapColorScheme}
+                  onValueChange={value =>
+                    onMapColorSchemeChange(
+                      value as 'LIGHT' | 'DARK' | 'FOLLOW_SYSTEM'
+                    )
+                  }
+                >
+                  <DropdownMenuRadioItem value='LIGHT'>
+                    ☀️ Light
+                  </DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value='DARK'>
+                    🌙 Dark
+                  </DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value='FOLLOW_SYSTEM'>
+                    🖥️ System
+                  </DropdownMenuRadioItem>
+                </DropdownMenuRadioGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
 
             {user ? (
               <DropdownMenu>
