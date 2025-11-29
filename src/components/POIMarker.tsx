@@ -1,6 +1,7 @@
 import { AdvancedMarker, InfoWindow } from '@vis.gl/react-google-maps'
 import { VendingMachinePin } from '../types/poi'
 import { memo } from 'react'
+import { formatAddressLines } from '../utils/addressParser'
 
 interface POIMarkerProps {
   pin: VendingMachinePin
@@ -21,17 +22,19 @@ export const POIMarker = memo(function POIMarker({
       src='/pokeball-pin.png'
       alt='Pokemon Vending Machine'
       style={{
-        width: '32px',
-        height: '50px',
+        width: '40px',
+        height: '64px',
         cursor: 'pointer',
         transition: 'transform 0.2s ease',
-        transform: isSelected ? 'scale(1.2)' : 'scale(1)'
+        transform: isSelected ? 'scale(0.7)' : 'scale(0.5)'
       }}
       onMouseEnter={e => {
-        e.currentTarget.style.transform = 'scale(1.15)'
+        e.currentTarget.style.transform = 'scale(0.6)'
       }}
       onMouseLeave={e => {
-        e.currentTarget.style.transform = isSelected ? 'scale(1.2)' : 'scale(1)'
+        e.currentTarget.style.transform = isSelected
+          ? 'scale(0.7)'
+          : 'scale(0.5)'
       }}
     />
   )
@@ -49,8 +52,7 @@ export const POIMarker = memo(function POIMarker({
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: '8px',
-                margin: '-6px 0 0 0'
+                gap: '8px'
               }}
             >
               <img
@@ -145,7 +147,7 @@ export const POIMarker = memo(function POIMarker({
                       lineHeight: '1.4'
                     }}
                   >
-                    {pin.address}
+                    {formatAddressLines(pin.address)}
                   </div>
                 </div>
               </div>

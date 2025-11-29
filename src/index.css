@@ -70,3 +70,17 @@
   }
 }
 
+/* Google Maps InfoWindow custom styles */
+.gm-style-iw-ch {
+  padding: 10px 0;
+}
+
+.gm-ui-hover-effect {
+  width: 44px !important;
+  height: 44px !important;
+}
+
+.gm-ui-hover-effect span {
+  margin: 10px !important;
+}
+
