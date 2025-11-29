@@ -21,7 +21,10 @@ import {
   Monitor,
   Crosshair,
   User as UserIcon,
-  LogOut
+  LogOut,
+  MapPinned,
+  ZoomIn,
+  Focus
 } from 'lucide-react'
 
 interface NavbarProps {
@@ -29,14 +32,24 @@ interface NavbarProps {
   user: User | null
   mapColorScheme: 'LIGHT' | 'DARK' | 'FOLLOW_SYSTEM'
   onMapColorSchemeChange: (scheme: 'LIGHT' | 'DARK' | 'FOLLOW_SYSTEM') => void
+  totalPins?: number
+  visiblePins?: number
+  currentZoom?: number
+  mapCenter?: { lat: number; lng: number }
+  // locationName?: string | null
 }
 
 export function Navbar({
   onLocateUser,
   user,
   mapColorScheme,
-  onMapColorSchemeChange
-}: NavbarProps) {
+  onMapColorSchemeChange,
+  totalPins = 0,
+  visiblePins = 0,
+  currentZoom = 5,
+  mapCenter
+}: // locationName
+NavbarProps) {
   const [showAuthDialog, setShowAuthDialog] = useState(false)
   const { signOut } = useAuth()
 
@@ -53,9 +66,64 @@ export function Navbar({
     <>
       <nav className='bg-slate-900 text-white shadow-md z-[1000]'>
         <div className='flex justify-between items-center max-w-full px-6 py-3'>
-          <h1 className='m-0 text-2xl font-semibold text-white'>
-            Pokemon VM Map
-          </h1>
+          <div className='flex items-center gap-6'>
+            <h1 className='m-0 text-2xl font-semibold text-white'>
+              Pokemon VM Map
+            </h1>
+
+            {/* Separator */}
+            {totalPins > 0 && <div className='h-8 w-px bg-slate-600' />}
+
+            {/* Stats display */}
+            {totalPins > 0 && (
+              <div className='flex items-center gap-4 text-sm'>
+                <div className='flex items-center gap-2 text-slate-300'>
+                  <MapPinned />
+                  <span>
+                    <span className='font-semibold text-white'>
+                      {visiblePins.toLocaleString()}
+                    </span>{' '}
+                    of {totalPins.toLocaleString()}
+                  </span>
+                </div>
+                <div className='h-4 w-px bg-slate-600' />
+                <div className='flex items-center gap-2 text-slate-300'>
+                  <ZoomIn />
+                  <span>
+                    <span className='font-semibold text-white'>
+                      {Math.round(currentZoom)}x
+                    </span>
+                  </span>
+                </div>
+
+                {/* Location info */}
+                {mapCenter && (
+                  <>
+                    <div className='h-4 w-px bg-slate-600' />
+                    <div className='flex items-center gap-2 text-slate-300'>
+                      <Focus />
+                      <span className='font-mono text-xs'>
+                        {mapCenter.lat.toFixed(4)}°, {mapCenter.lng.toFixed(4)}°
+                      </span>
+                    </div>
+                  </>
+                )}
+
+                {/* Location name if available */}
+                {/* {locationName && (
+                  <>
+                    <div className='h-4 w-px bg-slate-600' />
+                    <div className='flex items-center gap-2 text-slate-300 max-w-[200px]'>
+                      <span className='truncate font-medium text-white'>
+                        {locationName}
+                      </span>
+                    </div>
+                  </>
+                )} */}
+              </div>
+            )}
+          </div>
+
           <div className='flex gap-3 items-center'>
             <Button
               variant='default'

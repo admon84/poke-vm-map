@@ -46,10 +46,9 @@ export function useViewportPins(
     })
 
     // Limit total markers even within viewport for performance
-    const maxMarkers = zoom < 10 ? 100 : zoom < 12 ? 200 : 500
+    const maxMarkers = zoom < 6 ? 2000 : zoom < 8 ? 1000 : zoom < 10 ? 500 : 100
     setVisiblePins(filtered.slice(0, maxMarkers))
   }, [allPins, bounds, zoom])
 
   return visiblePins
 }
-

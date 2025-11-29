@@ -9,7 +9,6 @@ import { POIMarker } from './POIMarker'
 import { UserLocationMarker } from './UserLocationMarker'
 import { VendingMachinePin } from '../types/poi'
 import { useViewportPins } from '../hooks/useViewportPins'
-import { MapPinned, ZoomIn } from 'lucide-react'
 
 interface MapProps {
   apiKey: string
@@ -19,6 +18,9 @@ interface MapProps {
   pinsLoading: boolean
   userLocation: { lat: number; lng: number } | null
   colorScheme: ColorScheme
+  onZoomChange?: (zoom: number) => void
+  onVisiblePinsChange?: (visibleCount: number) => void
+  onCenterChange?: (center: { lat: number; lng: number }) => void
 }
 
 interface Bounds {
@@ -32,12 +34,14 @@ function MapController({
   center,
   zoom,
   onBoundsChanged,
-  onZoomChanged
+  onZoomChanged,
+  onCenterChanged
 }: {
   center: { lat: number; lng: number }
   zoom: number
   onBoundsChanged: (bounds: Bounds | null) => void
   onZoomChanged: (zoom: number) => void
+  onCenterChanged: (center: { lat: number; lng: number }) => void
 }) {
   const map = useMap()
 
@@ -70,11 +74,22 @@ function MapController({
       }
     })
 
+    const centerListener = map.addListener('center_changed', () => {
+      const mapCenter = map.getCenter()
+      if (mapCenter) {
+        onCenterChanged({
+          lat: mapCenter.lat(),
+          lng: mapCenter.lng()
+        })
+      }
+    })
+
     return () => {
       google.maps.event.removeListener(boundsListener)
       google.maps.event.removeListener(zoomListener)
+      google.maps.event.removeListener(centerListener)
     }
-  }, [map, onBoundsChanged, onZoomChanged])
+  }, [map, onBoundsChanged, onZoomChanged, onCenterChanged])
 
   return null
 }
@@ -86,7 +101,10 @@ export function Map({
   pins,
   pinsLoading,
   userLocation,
-  colorScheme
+  colorScheme,
+  onZoomChange,
+  onVisiblePinsChange,
+  onCenterChange
 }: MapProps) {
   const [selectedMarkerId, setSelectedMarkerId] = useState<string | null>(null)
   const [bounds, setBounds] = useState<Bounds | null>(null)
@@ -99,9 +117,25 @@ export function Map({
     setBounds(newBounds)
   }, [])
 
-  const handleZoomChanged = useCallback((newZoom: number) => {
-    setCurrentZoom(newZoom)
-  }, [])
+  const handleZoomChanged = useCallback(
+    (newZoom: number) => {
+      setCurrentZoom(newZoom)
+      onZoomChange?.(newZoom)
+    },
+    [onZoomChange]
+  )
+
+  const handleCenterChanged = useCallback(
+    (newCenter: { lat: number; lng: number }) => {
+      onCenterChange?.(newCenter)
+    },
+    [onCenterChange]
+  )
+
+  // Notify parent of visible pins count changes
+  useEffect(() => {
+    onVisiblePinsChange?.(visiblePins.length)
+  }, [visiblePins.length, onVisiblePinsChange])
 
   return (
     <APIProvider apiKey={apiKey}>
@@ -125,6 +159,7 @@ export function Map({
             zoom={zoom}
             onBoundsChanged={handleBoundsChanged}
             onZoomChanged={handleZoomChanged}
+            onCenterChanged={handleCenterChanged}
           />
 
           {/* User location marker */}
@@ -141,21 +176,6 @@ export function Map({
               />
             ))}
         </GoogleMap>
-
-        {/* Pin counter */}
-        {!pinsLoading && pins.length > 0 && (
-          <div className='absolute bottom-4 left-4 bg-white px-4 py-2 rounded-lg shadow-lg z-[1000]'>
-            <div className='text-sm font-medium text-gray-700 flex items-center gap-2'>
-              <MapPinned className='h-4 w-4' />
-              Showing {visiblePins.length.toLocaleString()} of{' '}
-              {pins.length.toLocaleString()} locations
-            </div>
-            <div className='text-xs text-gray-500 mt-1 flex items-center gap-1'>
-              <ZoomIn className='h-3 w-3' />
-              Zoom: {Math.round(currentZoom)}x
-            </div>
-          </div>
-        )}
       </div>
     </APIProvider>
   )

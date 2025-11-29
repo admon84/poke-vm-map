@@ -6,15 +6,22 @@ import { useState } from 'react'
 import { useGeoJSONPins } from './hooks/useGeoJSONPins'
 import { useAuth } from './hooks/useAuth'
 import { useMapColorScheme } from './hooks/useMapColorScheme'
+// import { useReverseGeocode } from './hooks/useReverseGeocode'
 
 function App() {
   const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY
   const [mapCenter, setMapCenter] = useState({ lat: 39.8283, lng: -98.5795 })
+  const [currentMapCenter, setCurrentMapCenter] = useState({
+    lat: 39.8283,
+    lng: -98.5795
+  })
   const [mapZoom, setMapZoom] = useState(5)
   const [userLocation, setUserLocation] = useState<{
     lat: number
     lng: number
   } | null>(null)
+  const [currentZoom, setCurrentZoom] = useState(5)
+  const [visiblePinsCount, setVisiblePinsCount] = useState(0)
 
   // Use GeoJSON data for Pokemon vending machines
   const { pins, loading: pinsLoading, error: pinsError } = useGeoJSONPins()
@@ -24,6 +31,13 @@ function App() {
     effectiveScheme,
     setPreference: setMapColorScheme
   } = useMapColorScheme()
+
+  // Get location name for current map center (only when zoomed in enough)
+  // const { locationName } = useReverseGeocode(
+  //   currentZoom >= 10 ? currentMapCenter : null,
+  //   apiKey,
+  //   1000 // Debounce
+  // )
 
   if (!apiKey) {
     return <div>Error: Google Maps API key not found</div>
@@ -43,7 +57,7 @@ function App() {
           setUserLocation(userLocation)
           setMapCenter(userLocation)
           setMapZoom(13)
-          toast.success('Location found!', {
+          toast.success('Location found', {
             description: 'Map centered on your location'
           })
         },
@@ -159,6 +173,11 @@ function App() {
         user={user}
         mapColorScheme={mapColorScheme}
         onMapColorSchemeChange={setMapColorScheme}
+        totalPins={pins.length}
+        visiblePins={visiblePinsCount}
+        currentZoom={currentZoom}
+        mapCenter={currentMapCenter}
+        // locationName={locationName}
       />
 
       {pinsLoading && (
@@ -181,6 +200,9 @@ function App() {
         pinsLoading={pinsLoading}
         userLocation={userLocation}
         colorScheme={effectiveScheme}
+        onZoomChange={setCurrentZoom}
+        onVisiblePinsChange={setVisiblePinsCount}
+        onCenterChange={setCurrentMapCenter}
       />
       <Toaster position='bottom-center' />
     </div>
