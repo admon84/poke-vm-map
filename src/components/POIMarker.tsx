@@ -2,12 +2,30 @@ import { AdvancedMarker, InfoWindow } from '@vis.gl/react-google-maps'
 import { VendingMachinePin } from '../types/poi'
 import { memo } from 'react'
 import { formatAddressLines } from '../utils/addressParser.tsx'
+import { Store, MapPin, Navigation } from 'lucide-react'
 
 interface POIMarkerProps {
   pin: VendingMachinePin
   isSelected: boolean
   onSelect: () => void
   onClose: () => void
+}
+
+const Label = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <div
+      style={{
+        fontSize: '12px',
+        color: '#666',
+        textTransform: 'uppercase',
+        letterSpacing: '0.5px',
+        fontWeight: '500',
+        marginBottom: '4px'
+      }}
+    >
+      {children}
+    </div>
+  )
 }
 
 export const POIMarker = memo(function POIMarker({
@@ -73,12 +91,7 @@ export const POIMarker = memo(function POIMarker({
             </div>
           }
         >
-          <div
-            style={{
-              maxWidth: '280px',
-              fontFamily: 'system-ui, -apple-system, sans-serif'
-            }}
-          >
+          <div style={{ maxWidth: '280px' }}>
             {/* Retailer with icon */}
             {pin.retailer && (
               <div
@@ -90,19 +103,9 @@ export const POIMarker = memo(function POIMarker({
                   borderBottom: '1px solid #f0f0f0'
                 }}
               >
-                <span style={{ fontSize: '18px' }}>🏪</span>
+                <Store className='h-5 w-5 text-gray-600 flex-shrink-0' />
                 <div>
-                  <div
-                    style={{
-                      fontSize: '12px',
-                      color: '#666',
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.5px',
-                      fontWeight: '500'
-                    }}
-                  >
-                    Store
-                  </div>
+                  <Label>Store</Label>
                   <div
                     style={{
                       fontSize: '14px',
@@ -126,25 +129,14 @@ export const POIMarker = memo(function POIMarker({
                   padding: '8px 0'
                 }}
               >
-                <span style={{ fontSize: '18px' }}>📍</span>
+                <MapPin className='h-5 w-5 text-gray-600 flex-shrink-0 mt-0.5' />
                 <div>
+                  <Label>Location</Label>
                   <div
                     style={{
-                      fontSize: '12px',
-                      color: '#666',
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.5px',
-                      fontWeight: '500',
-                      marginBottom: '4px'
-                    }}
-                  >
-                    Location
-                  </div>
-                  <div
-                    style={{
-                      fontSize: '13px',
-                      color: '#444',
-                      lineHeight: '1.4'
+                      fontSize: '14px',
+                      color: '#1a1a1a',
+                      fontWeight: '400'
                     }}
                   >
                     {formatAddressLines(pin.address)}
@@ -169,7 +161,7 @@ export const POIMarker = memo(function POIMarker({
                 <span style={{ fontSize: '16px', color: '#4CAF50' }}>✓</span>
                 <span
                   style={{
-                    fontSize: '13px',
+                    fontSize: '14px',
                     color: '#2e7d32',
                     fontWeight: '600'
                   }}
@@ -203,7 +195,7 @@ export const POIMarker = memo(function POIMarker({
                   color: 'white',
                   textDecoration: 'none',
                   borderRadius: '6px',
-                  fontSize: '13px',
+                  fontSize: '14px',
                   fontWeight: '500',
                   transition: 'background-color 0.2s',
                   cursor: 'pointer'
@@ -215,6 +207,7 @@ export const POIMarker = memo(function POIMarker({
                   e.currentTarget.style.backgroundColor = '#4285f4'
                 }}
               >
+                <Navigation className='h-4 w-4' />
                 <span>Get Directions</span>
               </a>
             </div>

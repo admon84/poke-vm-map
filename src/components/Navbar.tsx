@@ -14,6 +14,15 @@ import { AuthDialog } from './AuthDialog'
 import { useState } from 'react'
 import { useAuth } from '../hooks/useAuth'
 import { toast } from 'sonner'
+import {
+  Settings,
+  Sun,
+  Moon,
+  Monitor,
+  Crosshair,
+  User as UserIcon,
+  LogOut
+} from 'lucide-react'
 
 interface NavbarProps {
   onLocateUser: () => void
@@ -53,14 +62,45 @@ export function Navbar({
               onClick={onLocateUser}
               className='flex items-center gap-2'
             >
+              <Crosshair className='h-4 w-4' />
               Find My Location
             </Button>
+
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant='secondary'>
+                    <UserIcon className='h-4 w-4' />
+                    <span className='text-sm'>
+                      {user.displayName || 'Guest'}
+                    </span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align='end'>
+                  <DropdownMenuLabel>
+                    {user.email || 'Anonymous'}
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleSignOut}>
+                    <LogOut className='h-4 w-4' />
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Button
+                variant='secondary'
+                onClick={() => setShowAuthDialog(true)}
+              >
+                Sign In
+              </Button>
+            )}
 
             {/* Settings Menu */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant='outline' size='icon'>
-                  <span className='text-lg'>⚙️</span>
+                <Button variant='secondary' size='icon'>
+                  <Settings className='h-5 w-5' />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align='end'>
@@ -75,45 +115,20 @@ export function Navbar({
                   }
                 >
                   <DropdownMenuRadioItem value='LIGHT'>
-                    ☀️ Light
+                    <Sun className='mr-2 h-4 w-4' />
+                    Light
                   </DropdownMenuRadioItem>
                   <DropdownMenuRadioItem value='DARK'>
-                    🌙 Dark
+                    <Moon className='mr-2 h-4 w-4' />
+                    Dark
                   </DropdownMenuRadioItem>
                   <DropdownMenuRadioItem value='FOLLOW_SYSTEM'>
-                    🖥️ System
+                    <Monitor className='mr-2 h-4 w-4' />
+                    System
                   </DropdownMenuRadioItem>
                 </DropdownMenuRadioGroup>
               </DropdownMenuContent>
             </DropdownMenu>
-
-            {user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant='secondary'>
-                    <span className='text-sm'>
-                      {user.displayName || 'Guest'}
-                    </span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align='end'>
-                  <DropdownMenuLabel>
-                    {user.email || 'Anonymous'}
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleSignOut}>
-                    Sign Out
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <Button
-                variant='secondary'
-                onClick={() => setShowAuthDialog(true)}
-              >
-                Sign In
-              </Button>
-            )}
           </div>
         </div>
       </nav>
