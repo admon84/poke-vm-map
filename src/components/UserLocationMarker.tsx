@@ -31,7 +31,7 @@ export const UserLocationMarker = memo(function UserLocationMarker({
             animation: 'pulse 2s infinite'
           }}
         />
-        
+
         {/* Inner blue dot */}
         <div
           style={{
@@ -51,4 +51,3 @@ export const UserLocationMarker = memo(function UserLocationMarker({
     </AdvancedMarker>
   )
 })
-

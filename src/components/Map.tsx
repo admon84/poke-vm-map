@@ -77,7 +77,14 @@ function MapController({
   return null
 }
 
-export function Map({ apiKey, center, zoom, pins, pinsLoading, userLocation }: MapProps) {
+export function Map({
+  apiKey,
+  center,
+  zoom,
+  pins,
+  pinsLoading,
+  userLocation
+}: MapProps) {
   const [selectedMarkerId, setSelectedMarkerId] = useState<string | null>(null)
   const [bounds, setBounds] = useState<Bounds | null>(null)
   const [currentZoom, setCurrentZoom] = useState(zoom)

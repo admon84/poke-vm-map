@@ -10,7 +10,10 @@ function App() {
   const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY
   const [mapCenter, setMapCenter] = useState({ lat: 39.8283, lng: -98.5795 })
   const [mapZoom, setMapZoom] = useState(5)
-  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null)
+  const [userLocation, setUserLocation] = useState<{
+    lat: number
+    lng: number
+  } | null>(null)
 
   // Use GeoJSON data for Pokemon vending machines
   const { pins, loading: pinsLoading, error: pinsError } = useGeoJSONPins()
