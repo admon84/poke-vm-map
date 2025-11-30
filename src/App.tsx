@@ -283,9 +283,6 @@ function App() {
         onZoomChange={setCurrentZoom}
         onVisiblePinsChange={setVisiblePinsCount}
         onCenterChange={setCurrentMapCenter}
-        onOpenDetails={pinId =>
-          panelActions.openRightPanel(pinId, 'location-details')
-        }
         selectedPinId={selectedPinId}
         onPinSelectionChange={setSelectedPinId}
         locationPulseTrigger={locationPulseTrigger}

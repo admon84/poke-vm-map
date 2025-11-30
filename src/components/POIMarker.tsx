@@ -2,14 +2,13 @@ import { AdvancedMarker, InfoWindow } from '@vis.gl/react-google-maps'
 import { VendingMachinePin } from '../types/poi'
 import { memo } from 'react'
 import { formatAddressLines } from '../utils/addressParser.tsx'
-import { Store, MapPin, Navigation, ChevronRight } from 'lucide-react'
+import { Store, MapPin, Navigation } from 'lucide-react'
 
 interface POIMarkerProps {
   pin: VendingMachinePin
   isSelected: boolean
   onSelect: () => void
   onClose: () => void
-  onOpenDetails?: (pinId: string) => void
 }
 
 const Label = ({ children }: { children: React.ReactNode }) => {
@@ -33,8 +32,7 @@ export const POIMarker = memo(function POIMarker({
   pin,
   isSelected,
   onSelect,
-  onClose,
-  onOpenDetails
+  onClose
 }: POIMarkerProps) {
   // Custom Pokeball marker (no default style needed)
 

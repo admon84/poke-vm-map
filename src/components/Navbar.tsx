@@ -179,26 +179,27 @@ NavbarProps) {
                 <div className='hidden lg:flex items-center gap-4 text-sm'>
                   {/* Nearest Locations - Only shows if user location available */}
                   {closestLocations.length > 0 && (
-                    <button
-                      onClick={onOpenNearestPanel}
-                      className='flex items-center gap-2 text-slate-300 hover:text-white transition-colors min-h-[44px] px-2 -mx-2 rounded'
-                    >
-                      <Navigation
-                        className='h-4 w-4 flex-shrink-0'
-                        strokeWidth={2}
-                      />
-                      <span>
-                        <span className='font-semibold text-white'>
-                          Nearest
+                    <>
+                      <button
+                        onClick={onOpenNearestPanel}
+                        className='flex items-center gap-2 text-slate-300 hover:text-white transition-colors min-h-[44px] px-2 -mx-2 rounded'
+                      >
+                        <Navigation
+                          className='h-4 w-4 flex-shrink-0'
+                          strokeWidth={2}
+                        />
+                        <span>
+                          <span className='font-semibold text-white'>
+                            Nearest
+                          </span>
+                          <span className='text-xs text-slate-400 ml-1'>
+                            ({closestLocations.length})
+                          </span>
                         </span>
-                        <span className='text-xs text-slate-400 ml-1'>
-                          ({closestLocations.length})
-                        </span>
-                      </span>
-                    </button>
+                      </button>
+                      <div className='h-4 w-px bg-slate-600' />
+                    </>
                   )}
-
-                  <div className='h-4 w-px bg-slate-600' />
 
                   {/* Visible Pin Count */}
                   <Tooltip>
@@ -341,42 +342,46 @@ NavbarProps) {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align='start' className='w-72'>
-                    <DropdownMenuLabel>Map Statistics</DropdownMenuLabel>
+                    <DropdownMenuLabel className='py-2'>
+                      Map Statistics
+                    </DropdownMenuLabel>
                     <DropdownMenuSeparator />
 
                     {/* Map Center */}
                     {mapCenter && (
                       <DropdownMenuItem
                         onClick={handleCopyCoordinates}
-                        className='flex-col items-start py-3'
+                        className='flex-col items-start py-1.5'
                       >
-                        <div className='flex items-center gap-2 mb-1'>
+                        <div className='flex items-center gap-2'>
                           <Focus
                             className='h-4 w-4 text-slate-400'
                             strokeWidth={2}
                           />
-                          <span className='font-medium'>Map Center</span>
+                          <span className='font-medium text-sm'>
+                            Map Center
+                          </span>
                         </div>
-                        <span className='font-mono text-xs text-slate-400 ml-6'>
+                        <span className='font-mono text-xs text-slate-400 ml-6 mt-0.5'>
                           {mapCenter.lat.toFixed(6)}°,{' '}
                           {mapCenter.lng.toFixed(6)}°
                         </span>
-                        <span className='text-xs text-slate-500 ml-6 mt-1'>
+                        <span className='text-xs text-slate-500 ml-6 mt-0.5'>
                           Tap to copy
                         </span>
                       </DropdownMenuItem>
                     )}
 
                     {/* Zoom Level */}
-                    <DropdownMenuItem className='flex-col items-start py-3'>
-                      <div className='flex items-center gap-2 mb-1'>
+                    <DropdownMenuItem className='flex-col items-start py-1.5'>
+                      <div className='flex items-center gap-2'>
                         <ZoomIn
                           className='h-4 w-4 text-slate-400'
                           strokeWidth={2}
                         />
-                        <span className='font-medium'>Zoom Level</span>
+                        <span className='font-medium text-sm'>Zoom Level</span>
                       </div>
-                      <span className='text-sm text-slate-400 ml-6'>
+                      <span className='text-xs text-slate-400 ml-6 mt-0.5'>
                         {Math.round(currentZoom)}x •{' '}
                         {currentZoom < 5
                           ? 'Continent view'
@@ -389,15 +394,17 @@ NavbarProps) {
                     </DropdownMenuItem>
 
                     {/* Visible Pins */}
-                    <DropdownMenuItem className='flex-col items-start py-3'>
-                      <div className='flex items-center gap-2 mb-1'>
+                    <DropdownMenuItem className='flex-col items-start py-1.5'>
+                      <div className='flex items-center gap-2'>
                         <MapPinned
                           className='h-4 w-4 text-slate-400'
                           strokeWidth={2}
                         />
-                        <span className='font-medium'>Visible Locations</span>
+                        <span className='font-medium text-sm'>
+                          Visible Locations
+                        </span>
                       </div>
-                      <span className='text-sm text-slate-400 ml-6'>
+                      <span className='text-xs text-slate-400 ml-6 mt-0.5'>
                         {visiblePins.toLocaleString()}
                       </span>
                     </DropdownMenuItem>

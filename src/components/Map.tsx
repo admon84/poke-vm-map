@@ -21,7 +21,6 @@ interface MapProps {
   onZoomChange?: (zoom: number) => void
   onVisiblePinsChange?: (visibleCount: number) => void
   onCenterChange?: (center: { lat: number; lng: number }) => void
-  onOpenDetails?: (pinId: string) => void
   selectedPinId?: string | null
   onPinSelectionChange?: (pinId: string | null) => void
   locationPulseTrigger?: number
@@ -109,7 +108,6 @@ export function Map({
   onZoomChange,
   onVisiblePinsChange,
   onCenterChange,
-  onOpenDetails,
   selectedPinId,
   onPinSelectionChange,
   locationPulseTrigger = 0
@@ -208,7 +206,6 @@ export function Map({
                 isSelected={selectedMarkerId === pin.id}
                 onSelect={() => handlePinSelect(pin.id)}
                 onClose={handlePinClose}
-                onOpenDetails={onOpenDetails}
               />
             ))}
         </GoogleMap>
