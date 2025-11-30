@@ -81,7 +81,7 @@ export function NearestLocations({
   }
 
   return (
-    <div className='p-4 mb-8 space-y-2'>
+    <div className='p-4 space-y-2 mb-10 sm:mb-0'>
       {pinsWithDistance.map((item, index) => (
         <button
           key={item.pin.id}
