@@ -1,0 +1,8 @@
+import{A as e,X as t}from"./react-vendor-ZjqdYyzx.js";import"./vendor-B131Y2xX.js";import{n}from"./index-ClmXECPO.js";var r=t();function i({isOpen:t,activeContent:i,isLoading:a=!1,onClose:o,children:s}){return(0,r.jsxs)(r.Fragment,{children:[t&&(0,r.jsx)(`div`,{className:`fixed inset-0 bg-black/20 z-[1040] transition-opacity duration-300`,onClick:o,"aria-hidden":`true`}),(0,r.jsxs)(`aside`,{className:`
+          fixed right-0 top-[68px] bottom-0 w-[28rem]
+          bg-slate-900/95 backdrop-blur-md
+          shadow-2xl border-l border-slate-700
+          z-[1050]
+          transform transition-transform duration-300 ease-out
+          ${t?`translate-x-0`:`translate-x-full`}
+        `,"aria-label":`Right panel`,"aria-hidden":!t,children:[(0,r.jsxs)(`div`,{className:`flex items-center justify-between px-4 py-3 border-b border-slate-700`,children:[(0,r.jsxs)(`h2`,{className:`text-lg font-semibold text-white`,children:[i===`location-details`&&`Location Details`,i===`reviews`&&`Reviews`,i===`photos`&&`Photos`]}),(0,r.jsx)(n,{variant:`ghost`,size:`sm`,onClick:o,"aria-label":`Close panel`,className:`text-white hover:text-slate-900 hover:bg-white`,children:(0,r.jsx)(e,{className:`h-4 w-4`,strokeWidth:2})})]}),(0,r.jsx)(`div`,{className:`overflow-y-auto h-[calc(100vh-57px-53px)] custom-scrollbar`,children:a?(0,r.jsx)(`div`,{className:`flex items-center justify-center h-full`,children:(0,r.jsx)(`div`,{className:`animate-spin rounded-full h-8 w-8 border-b-2 border-white`})}):s})]})]})}export{i as RightPanel};
