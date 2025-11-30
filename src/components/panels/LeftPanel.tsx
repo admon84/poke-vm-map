@@ -9,7 +9,12 @@ interface LeftPanelProps {
   children: React.ReactNode
 }
 
-export function LeftPanel({ isOpen, activeContent, onClose, children }: LeftPanelProps) {
+export function LeftPanel({
+  isOpen,
+  activeContent,
+  onClose,
+  children
+}: LeftPanelProps) {
   return (
     <>
       {/* Backdrop */}
@@ -24,7 +29,7 @@ export function LeftPanel({ isOpen, activeContent, onClose, children }: LeftPane
       {/* Panel */}
       <aside
         className={`
-          fixed left-0 top-[57px] bottom-0 w-96 
+          fixed left-0 top-[68px] bottom-0 w-96 
           bg-slate-900/95 backdrop-blur-md
           shadow-2xl border-r border-slate-700
           z-[1050]
@@ -44,7 +49,7 @@ export function LeftPanel({ isOpen, activeContent, onClose, children }: LeftPane
           </h2>
           <Button
             variant='ghost'
-            size='icon'
+            size='sm'
             onClick={onClose}
             aria-label='Close panel'
             className='text-white hover:text-slate-900 hover:bg-white'
@@ -61,4 +66,3 @@ export function LeftPanel({ isOpen, activeContent, onClose, children }: LeftPane
     </>
   )
 }
-

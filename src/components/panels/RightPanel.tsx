@@ -16,7 +16,7 @@ export function RightPanel({
   activeContent,
   isLoading = false,
   onClose,
-  children,
+  children
 }: RightPanelProps) {
   return (
     <>
@@ -32,7 +32,7 @@ export function RightPanel({
       {/* Panel */}
       <aside
         className={`
-          fixed right-0 top-[57px] bottom-0 w-[28rem]
+          fixed right-0 top-[68px] bottom-0 w-[28rem]
           bg-slate-900/95 backdrop-blur-md
           shadow-2xl border-l border-slate-700
           z-[1050]
@@ -51,7 +51,7 @@ export function RightPanel({
           </h2>
           <Button
             variant='ghost'
-            size='icon'
+            size='sm'
             onClick={onClose}
             aria-label='Close panel'
             className='text-white hover:text-slate-900 hover:bg-white'
@@ -74,4 +74,3 @@ export function RightPanel({
     </>
   )
 }
-

@@ -22,6 +22,8 @@ interface MapProps {
   onVisiblePinsChange?: (visibleCount: number) => void
   onCenterChange?: (center: { lat: number; lng: number }) => void
   onOpenDetails?: (pinId: string) => void
+  selectedPinId?: string | null
+  onPinSelectionChange?: (pinId: string | null) => void
 }
 
 interface Bounds {
@@ -106,7 +108,9 @@ export function Map({
   onZoomChange,
   onVisiblePinsChange,
   onCenterChange,
-  onOpenDetails
+  onOpenDetails,
+  selectedPinId,
+  onPinSelectionChange
 }: MapProps) {
   const [selectedMarkerId, setSelectedMarkerId] = useState<string | null>(null)
   const [bounds, setBounds] = useState<Bounds | null>(null)
@@ -114,6 +118,28 @@ export function Map({
 
   // Use viewport filtering for better performance
   const visiblePins = useViewportPins(pins, bounds, currentZoom)
+
+  // Sync external selectedPinId with internal state
+  useEffect(() => {
+    if (selectedPinId !== undefined && selectedPinId !== selectedMarkerId) {
+      setSelectedMarkerId(selectedPinId)
+    }
+  }, [selectedPinId, selectedMarkerId])
+
+  // Handle pin selection
+  const handlePinSelect = useCallback(
+    (pinId: string) => {
+      setSelectedMarkerId(pinId)
+      onPinSelectionChange?.(pinId)
+    },
+    [onPinSelectionChange]
+  )
+
+  // Handle pin close
+  const handlePinClose = useCallback(() => {
+    setSelectedMarkerId(null)
+    onPinSelectionChange?.(null)
+  }, [onPinSelectionChange])
 
   const handleBoundsChanged = useCallback((newBounds: Bounds | null) => {
     setBounds(newBounds)
@@ -173,8 +199,8 @@ export function Map({
                 key={pin.id}
                 pin={pin}
                 isSelected={selectedMarkerId === pin.id}
-                onSelect={() => setSelectedMarkerId(pin.id)}
-                onClose={() => setSelectedMarkerId(null)}
+                onSelect={() => handlePinSelect(pin.id)}
+                onClose={handlePinClose}
                 onOpenDetails={onOpenDetails}
               />
             ))}

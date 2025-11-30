@@ -26,6 +26,7 @@ function App() {
   } | null>(null)
   const [currentZoom, setCurrentZoom] = useState(5)
   const [visiblePinsCount, setVisiblePinsCount] = useState(0)
+  const [selectedPinId, setSelectedPinId] = useState<string | null>(null)
 
   // Constants for nearest locations filtering
   const maxNearestLocations = 25
@@ -54,6 +55,7 @@ function App() {
     if (pin) {
       setMapCenter(pin.location)
       setMapZoom(15) // Zoom in to street level
+      setSelectedPinId(pinId) // Select the pin to open its InfoWindow
     }
   }
 
@@ -253,6 +255,8 @@ function App() {
         onOpenDetails={pinId =>
           panelActions.openRightPanel(pinId, 'location-details')
         }
+        selectedPinId={selectedPinId}
+        onPinSelectionChange={setSelectedPinId}
       />
 
       {/* Left Panel - Nearest Locations */}
@@ -266,6 +270,7 @@ function App() {
             userLocation={userLocation}
             pins={pins}
             onPinSelect={handlePinSelect}
+            onClose={panelActions.closeLeftPanel}
             maxResults={maxNearestLocations}
             maxDistance={maxNearestDistance}
           />

@@ -11,6 +11,7 @@ interface NearestLocationsProps {
   userLocation: { lat: number; lng: number }
   pins: Pin[]
   onPinSelect: (pinId: string) => void
+  onClose?: () => void
   maxResults?: number
   maxDistance?: number
 }
@@ -19,6 +20,7 @@ export function NearestLocations({
   userLocation,
   pins,
   onPinSelect,
+  onClose,
   maxResults = 25,
   maxDistance = 50
 }: NearestLocationsProps) {
@@ -73,12 +75,17 @@ export function NearestLocations({
     )
   }
 
+  const handleLocationClick = (pinId: string) => {
+    onPinSelect(pinId)
+    onClose?.()
+  }
+
   return (
     <div className='p-4 space-y-2'>
       {pinsWithDistance.map((item, index) => (
         <button
           key={item.pin.id}
-          onClick={() => onPinSelect(item.pin.id)}
+          onClick={() => handleLocationClick(item.pin.id)}
           className='w-full text-left p-4 rounded-lg bg-slate-800/50 hover:bg-slate-700 transition-colors group'
         >
           <div className='flex items-start justify-between gap-3'>

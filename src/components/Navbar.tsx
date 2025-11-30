@@ -238,7 +238,7 @@ NavbarProps) {
                           : 'Street view'}
                       </p>
                       <p className='text-xs text-slate-400 mt-1.5'>
-                        Scale: 1-20 • Current: {currentZoom.toFixed(1)}
+                        Scale: 1-20 • Current: {currentZoom}
                       </p>
                     </TooltipContent>
                   </Tooltip>
@@ -457,7 +457,7 @@ NavbarProps) {
               {/* Settings Menu */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant='secondary' size='icon'>
+                  <Button variant='secondary' size='sm'>
                     <Settings className='h-4 w-4' strokeWidth={2} />
                   </Button>
                 </DropdownMenuTrigger>
