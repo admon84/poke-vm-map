@@ -1,6 +1,7 @@
 import { X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import type { LeftPanelContent } from '@/types/panel'
+import { useNavbarHeight } from '@/hooks/useNavbarHeight'
 
 interface LeftPanelProps {
   isOpen: boolean
@@ -15,6 +16,8 @@ export function LeftPanel({
   onClose,
   children
 }: LeftPanelProps) {
+  const navbarHeight = useNavbarHeight()
+
   return (
     <>
       {/* Backdrop */}
@@ -29,13 +32,16 @@ export function LeftPanel({
       {/* Panel */}
       <aside
         className={`
-          fixed left-0 top-[68px] bottom-0 w-96 
+          fixed left-0 bottom-0 w-96 
           bg-slate-900/95 backdrop-blur-md
           shadow-2xl border-r border-slate-700
           z-[1050]
           transform transition-transform duration-300 ease-out
           ${isOpen ? 'translate-x-0' : '-translate-x-full'}
         `}
+        style={{
+          top: `${navbarHeight}px`
+        }}
         aria-label='Left panel'
         aria-hidden={!isOpen}
       >
@@ -59,7 +65,12 @@ export function LeftPanel({
         </div>
 
         {/* Content */}
-        <div className='overflow-y-auto h-[calc(100vh-57px-53px)] custom-scrollbar'>
+        <div
+          className='overflow-y-auto custom-scrollbar'
+          style={{
+            height: `calc(100vh - ${navbarHeight}px - 53px)`
+          }}
+        >
           {children}
         </div>
       </aside>

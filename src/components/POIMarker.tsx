@@ -221,7 +221,8 @@ export const POIMarker = memo(function POIMarker({
                 <span>Get Directions</span>
               </a>
 
-              {onOpenDetails && (
+              {/* TODO: More details right panel functionality */}
+              {/* {onOpenDetails && (
                 <button
                   onClick={() => onOpenDetails(pin.id)}
                   style={{
@@ -249,7 +250,7 @@ export const POIMarker = memo(function POIMarker({
                   <span>More Details</span>
                   <ChevronRight className='h-4 w-4' />
                 </button>
-              )}
+              )} */}
             </div>
           </div>
         </InfoWindow>

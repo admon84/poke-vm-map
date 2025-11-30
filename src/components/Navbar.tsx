@@ -164,7 +164,7 @@ NavbarProps) {
       <TooltipProvider delayDuration={300} disableHoverableContent={false}>
         <nav className='bg-slate-900 text-white shadow-md z-[1000] relative'>
           <div className='flex justify-between items-center max-w-full px-3 sm:px-6 py-3'>
-            <div className='flex items-center gap-3 sm:gap-6'>
+            <div className='flex items-center gap-2 sm:gap-3'>
               <h1 className='m-0 text-xl sm:text-2xl font-semibold text-white'>
                 PokeMap
               </h1>
@@ -177,42 +177,56 @@ NavbarProps) {
               {/* Stats display - Desktop only */}
               {totalPins > 0 && (
                 <div className='hidden lg:flex items-center gap-4 text-sm'>
-                  {/* Map Center Coordinates */}
-                  {mapCenter && (
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <button
-                          className='flex items-center gap-2 text-slate-300 hover:text-white transition-colors min-h-[44px] px-2 -mx-2 rounded'
-                          onClick={handleCopyCoordinates}
-                        >
-                          <Focus
-                            className='h-4 w-4 flex-shrink-0'
-                            strokeWidth={2}
-                          />
-                          <span className='font-mono text-xs'>
-                            <span className='font-semibold text-white'>
-                              {mapCenter.lat.toFixed(4)}°,{' '}
-                              {mapCenter.lng.toFixed(4)}°
-                            </span>
-                          </span>
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent side='bottom'>
-                        <p className='font-medium mb-1'>Map Center</p>
-                        <p className='text-xs text-slate-300'>
-                          Lat: {mapCenter.lat.toFixed(6)}°{' '}
-                          {mapCenter.lat >= 0 ? 'N' : 'S'}
-                        </p>
-                        <p className='text-xs text-slate-300'>
-                          Lng: {mapCenter.lng.toFixed(6)}°{' '}
-                          {mapCenter.lng >= 0 ? 'E' : 'W'}
-                        </p>
-                        <p className='text-xs text-slate-400 mt-1.5'>
-                          Click to copy coordinates
-                        </p>
-                      </TooltipContent>
-                    </Tooltip>
+                  {/* Nearest Locations - Only shows if user location available */}
+                  {closestLocations.length > 0 && (
+                    <button
+                      onClick={onOpenNearestPanel}
+                      className='flex items-center gap-2 text-slate-300 hover:text-white transition-colors min-h-[44px] px-2 -mx-2 rounded'
+                    >
+                      <Navigation
+                        className='h-4 w-4 flex-shrink-0'
+                        strokeWidth={2}
+                      />
+                      <span>
+                        <span className='font-semibold text-white'>
+                          Nearest
+                        </span>
+                        <span className='text-xs text-slate-400 ml-1'>
+                          ({closestLocations.length})
+                        </span>
+                      </span>
+                    </button>
                   )}
+
+                  <div className='h-4 w-px bg-slate-600' />
+
+                  {/* Visible Pin Count */}
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className='flex items-center gap-2 text-slate-300 min-h-[44px] px-2 -mx-2 rounded'>
+                        <MapPinned
+                          className='h-4 w-4 flex-shrink-0'
+                          strokeWidth={2}
+                        />
+                        <span>
+                          <span className='font-semibold text-white'>
+                            {visiblePins.toLocaleString()}
+                          </span>
+                        </span>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent side='bottom'>
+                      <p className='font-medium mb-1'>Visible Locations</p>
+                      <p className='text-xs text-slate-300'>
+                        {`${visiblePins.toLocaleString()} in current view`}
+                      </p>
+                      {visiblePins < totalPins && (
+                        <p className='text-xs text-slate-400 mt-1.5'>
+                          Zoom out or pan to see more
+                        </p>
+                      )}
+                    </TooltipContent>
+                  </Tooltip>
 
                   <div className='h-4 w-px bg-slate-600' />
 
@@ -250,56 +264,41 @@ NavbarProps) {
 
                   <div className='h-4 w-px bg-slate-600' />
 
-                  {/* Visible Pin Count */}
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className='flex items-center gap-2 text-slate-300 min-h-[44px] px-2 -mx-2 rounded'>
-                        <MapPinned
-                          className='h-4 w-4 flex-shrink-0'
-                          strokeWidth={2}
-                        />
-                        <span>
-                          <span className='font-semibold text-white'>
-                            {visiblePins.toLocaleString()}
+                  {/* Map Center Coordinates */}
+                  {mapCenter && (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          className='flex items-center gap-2 text-slate-300 hover:text-white transition-colors min-h-[44px] px-2 -mx-2 rounded'
+                          onClick={handleCopyCoordinates}
+                        >
+                          <Focus
+                            className='h-4 w-4 flex-shrink-0'
+                            strokeWidth={2}
+                          />
+                          <span className='font-mono text-xs'>
+                            <span className='font-semibold text-white'>
+                              {mapCenter.lat.toFixed(4)}°,{' '}
+                              {mapCenter.lng.toFixed(4)}°
+                            </span>
                           </span>
-                        </span>
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent side='bottom'>
-                      <p className='font-medium mb-1'>Visible Locations</p>
-                      <p className='text-xs text-slate-300'>
-                        {`${visiblePins.toLocaleString()} in current view`}
-                      </p>
-                      {visiblePins < totalPins && (
-                        <p className='text-xs text-slate-400 mt-1.5'>
-                          Zoom out or pan to see more
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent side='bottom'>
+                        <p className='font-medium mb-1'>Map Center</p>
+                        <p className='text-xs text-slate-300'>
+                          Lat: {mapCenter.lat.toFixed(6)}°{' '}
+                          {mapCenter.lat >= 0 ? 'N' : 'S'}
                         </p>
-                      )}
-                    </TooltipContent>
-                  </Tooltip>
-
-                  {/* Nearest Locations - Only shows if user location available */}
-                  {closestLocations.length > 0 && (
-                    <>
-                      <div className='h-4 w-px bg-slate-600' />
-                      <button
-                        onClick={onOpenNearestPanel}
-                        className='flex items-center gap-2 text-slate-300 hover:text-white transition-colors min-h-[44px] px-2 -mx-2 rounded'
-                      >
-                        <Navigation
-                          className='h-4 w-4 flex-shrink-0'
-                          strokeWidth={2}
-                        />
-                        <span>
-                          <span className='font-semibold text-white'>
-                            Nearest
-                          </span>
-                          <span className='text-xs text-slate-400 ml-1'>
-                            ({closestLocations.length})
-                          </span>
-                        </span>
-                      </button>
-                    </>
+                        <p className='text-xs text-slate-300'>
+                          Lng: {mapCenter.lng.toFixed(6)}°{' '}
+                          {mapCenter.lng >= 0 ? 'E' : 'W'}
+                        </p>
+                        <p className='text-xs text-slate-400 mt-1.5'>
+                          Click to copy coordinates
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
                   )}
 
                   {/* Location name if available */}
@@ -314,6 +313,19 @@ NavbarProps) {
                   </>
                 )} */}
                 </div>
+              )}
+
+              {/* Nearest Locations Button - Mobile/Tablet only */}
+              {closestLocations.length > 0 && (
+                <Button
+                  variant='secondary'
+                  size='sm'
+                  onClick={onOpenNearestPanel}
+                  className='lg:hidden flex items-center gap-2'
+                >
+                  <Navigation className='h-4 w-4' strokeWidth={2} />
+                  <span className='hidden sm:inline'>Nearest</span>
+                </Button>
               )}
 
               {/* Mobile Stats Button - Shows on tablet and mobile */}
@@ -389,34 +401,12 @@ NavbarProps) {
                         {visiblePins.toLocaleString()}
                       </span>
                     </DropdownMenuItem>
-
-                    {/* Nearest */}
-                    {closestLocations.length > 0 && (
-                      <>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                          onClick={() => {
-                            setShowMobileStats(false)
-                            onOpenNearestPanel?.()
-                          }}
-                          className='flex items-center gap-2 py-3'
-                        >
-                          <Navigation className='h-4 w-4' strokeWidth={2} />
-                          <span className='font-medium'>
-                            View Nearest Locations
-                          </span>
-                          <span className='ml-auto text-sm text-slate-400'>
-                            ({closestLocations.length})
-                          </span>
-                        </DropdownMenuItem>
-                      </>
-                    )}
                   </DropdownMenuContent>
                 </DropdownMenu>
               )}
             </div>
 
-            <div className='flex gap-2 sm:gap-3 items-center'>
+            <div className='flex gap-2 sm:gap-3 items-center pl-2 sm:pl-0'>
               <Button
                 variant='default'
                 size='sm'

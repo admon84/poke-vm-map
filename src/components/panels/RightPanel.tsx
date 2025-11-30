@@ -1,6 +1,7 @@
 import { X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import type { RightPanelContent } from '@/types/panel'
+import { useNavbarHeight } from '@/hooks/useNavbarHeight'
 
 interface RightPanelProps {
   isOpen: boolean
@@ -18,6 +19,8 @@ export function RightPanel({
   onClose,
   children
 }: RightPanelProps) {
+  const navbarHeight = useNavbarHeight()
+
   return (
     <>
       {/* Backdrop */}
@@ -32,13 +35,16 @@ export function RightPanel({
       {/* Panel */}
       <aside
         className={`
-          fixed right-0 top-[68px] bottom-0 w-[28rem]
+          fixed right-0 bottom-0 w-[28rem]
           bg-slate-900/95 backdrop-blur-md
           shadow-2xl border-l border-slate-700
           z-[1050]
           transform transition-transform duration-300 ease-out
           ${isOpen ? 'translate-x-0' : 'translate-x-full'}
         `}
+        style={{
+          top: `${navbarHeight}px`
+        }}
         aria-label='Right panel'
         aria-hidden={!isOpen}
       >
@@ -61,7 +67,12 @@ export function RightPanel({
         </div>
 
         {/* Content */}
-        <div className='overflow-y-auto h-[calc(100vh-57px-53px)] custom-scrollbar'>
+        <div
+          className='overflow-y-auto custom-scrollbar'
+          style={{
+            height: `calc(100vh - ${navbarHeight}px - 53px)`
+          }}
+        >
           {isLoading ? (
             <div className='flex items-center justify-center h-full'>
               <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-white' />
