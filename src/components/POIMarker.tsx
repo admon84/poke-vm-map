@@ -43,7 +43,7 @@ export const POIMarker = memo(function POIMarker({
 
   const markerContent = (
     <img
-      src='/pokeball-pin.png'
+      src={`${import.meta.env.BASE_URL}pokeball-pin.png`}
       alt='Pokemon Vending Machine'
       style={{
         width: `${width}px`,
@@ -80,7 +80,7 @@ export const POIMarker = memo(function POIMarker({
               }}
             >
               <img
-                src='/pokeball-pin.png'
+                src={`${import.meta.env.BASE_URL}pokeball-pin.png`}
                 alt='Pokeball'
                 style={{
                   width: '16px',
