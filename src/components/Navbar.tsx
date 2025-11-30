@@ -67,9 +67,7 @@ NavbarProps) {
       <nav className='bg-slate-900 text-white shadow-md z-[1000]'>
         <div className='flex justify-between items-center max-w-full px-6 py-3'>
           <div className='flex items-center gap-6'>
-            <h1 className='m-0 text-2xl font-semibold text-white'>
-              Pokemon VM Map
-            </h1>
+            <h1 className='m-0 text-2xl font-semibold text-white'>PokeMap</h1>
 
             {/* Separator */}
             {totalPins > 0 && <div className='h-8 w-px bg-slate-600' />}
