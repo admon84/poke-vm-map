@@ -2,15 +2,27 @@ import { Map } from './components/Map'
 import { Navbar } from './components/Navbar'
 import { Toaster } from '@/components/ui/sonner'
 import { toast } from 'sonner'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, lazy, Suspense } from 'react'
 import { useGeoJSONPins } from './hooks/useGeoJSONPins'
 import { useAuth } from './hooks/useAuth'
 import { useMapColorScheme } from './hooks/useMapColorScheme'
-import { LeftPanel } from './components/panels/LeftPanel'
-import { RightPanel } from './components/panels/RightPanel'
-import { NearestLocations } from './components/panels/NearestLocations'
 import { usePanelState } from './hooks/usePanelState'
 // import { useReverseGeocode } from './hooks/useReverseGeocode'
+
+// Lazy load panel components (not needed on initial render)
+const LeftPanel = lazy(() =>
+  import('./components/panels/LeftPanel').then(m => ({ default: m.LeftPanel }))
+)
+const RightPanel = lazy(() =>
+  import('./components/panels/RightPanel').then(m => ({
+    default: m.RightPanel
+  }))
+)
+const NearestLocations = lazy(() =>
+  import('./components/panels/NearestLocations').then(m => ({
+    default: m.NearestLocations
+  }))
+)
 
 function App() {
   const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY
@@ -280,42 +292,46 @@ function App() {
       />
 
       {/* Left Panel - Nearest Locations */}
-      <LeftPanel
-        isOpen={panelState.leftPanel.isOpen}
-        activeContent={panelState.leftPanel.activeContent}
-        onClose={panelActions.closeLeftPanel}
-      >
-        {panelState.leftPanel.activeContent === 'nearest' && userLocation && (
-          <NearestLocations
-            userLocation={userLocation}
-            pins={pins}
-            onPinSelect={handlePinSelect}
-            onClose={panelActions.closeLeftPanel}
-            maxResults={maxNearestLocations}
-            maxDistance={maxNearestDistance}
-          />
-        )}
-      </LeftPanel>
+      <Suspense fallback={null}>
+        <LeftPanel
+          isOpen={panelState.leftPanel.isOpen}
+          activeContent={panelState.leftPanel.activeContent}
+          onClose={panelActions.closeLeftPanel}
+        >
+          {panelState.leftPanel.activeContent === 'nearest' && userLocation && (
+            <NearestLocations
+              userLocation={userLocation}
+              pins={pins}
+              onPinSelect={handlePinSelect}
+              onClose={panelActions.closeLeftPanel}
+              maxResults={maxNearestLocations}
+              maxDistance={maxNearestDistance}
+            />
+          )}
+        </LeftPanel>
+      </Suspense>
 
       {/* Right Panel - Location Details */}
-      <RightPanel
-        isOpen={panelState.rightPanel.isOpen}
-        activeContent={panelState.rightPanel.activeContent}
-        locationId={panelState.rightPanel.locationId}
-        isLoading={panelState.rightPanel.isLoading}
-        onClose={panelActions.closeRightPanel}
-      >
-        {panelState.rightPanel.locationId && (
-          <div className='p-4'>
-            <p className='text-slate-300'>
-              Details for location: {panelState.rightPanel.locationId}
-            </p>
-            <p className='text-slate-400 text-sm mt-2'>
-              Extended location details will be implemented in Phase 3
-            </p>
-          </div>
-        )}
-      </RightPanel>
+      <Suspense fallback={null}>
+        <RightPanel
+          isOpen={panelState.rightPanel.isOpen}
+          activeContent={panelState.rightPanel.activeContent}
+          locationId={panelState.rightPanel.locationId}
+          isLoading={panelState.rightPanel.isLoading}
+          onClose={panelActions.closeRightPanel}
+        >
+          {panelState.rightPanel.locationId && (
+            <div className='p-4'>
+              <p className='text-slate-300'>
+                Details for location: {panelState.rightPanel.locationId}
+              </p>
+              <p className='text-slate-400 text-sm mt-2'>
+                Extended location details will be implemented in Phase 3
+              </p>
+            </div>
+          )}
+        </RightPanel>
+      </Suspense>
 
       <Toaster position='bottom-center' />
     </div>

@@ -28,7 +28,9 @@ export function useGeoJSONPins() {
     async function fetchGeoJSON() {
       try {
         // Fetch from local public folder for best performance
-        const response = await fetch('/data/pokemon-vms.geojson')
+        // Use BASE_URL to support both dev (/) and production (/poke-vm-map/)
+        const baseUrl = import.meta.env.BASE_URL
+        const response = await fetch(`${baseUrl}data/pokemon-vms.geojson`)
 
         if (!response.ok) {
           throw new Error(`Failed to fetch: ${response.statusText}`)

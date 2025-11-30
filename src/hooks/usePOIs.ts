@@ -7,8 +7,8 @@ import { PointOfInterest } from '../types/poi'
  */
 export function usePOIs(initialPOIs: PointOfInterest[]) {
   const [pois, setPois] = useState<PointOfInterest[]>(initialPOIs)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<Error | null>(null)
+  // const [loading, setLoading] = useState(false)
+  // const [error, setError] = useState<Error | null>(null)
 
   // Example: Fetch POIs from an API
   // Uncomment and modify when you have an API endpoint
@@ -32,7 +32,7 @@ export function usePOIs(initialPOIs: PointOfInterest[]) {
   }, [])
   */
 
-  return { pois, loading, error, setPois }
+  return { pois, setPois }
 }
 
 /**
@@ -63,16 +63,16 @@ export function useMapState() {
 export function useFilteredPOIs(
   pois: PointOfInterest[],
   searchTerm?: string,
-  categoryFilter?: PointOfInterest['category']
+  retailerFilter?: string
 ) {
   const [filteredPOIs, setFilteredPOIs] = useState(pois)
 
   useEffect(() => {
     let result = pois
 
-    // Filter by category
-    if (categoryFilter) {
-      result = result.filter((poi) => poi.category === categoryFilter)
+    // Filter by retailer
+    if (retailerFilter) {
+      result = result.filter((poi) => poi.retailer === retailerFilter)
     }
 
     // Filter by search term
@@ -86,7 +86,7 @@ export function useFilteredPOIs(
     }
 
     setFilteredPOIs(result)
-  }, [pois, searchTerm, categoryFilter])
+  }, [pois, searchTerm, retailerFilter])
 
   return filteredPOIs
 }

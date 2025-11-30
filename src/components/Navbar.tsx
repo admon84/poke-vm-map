@@ -16,8 +16,7 @@ import {
   TooltipTrigger
 } from '@/components/ui/tooltip'
 import { User } from 'firebase/auth'
-import { AuthDialog } from './AuthDialog'
-import { useState } from 'react'
+import { useState, lazy, Suspense } from 'react'
 import { useAuth } from '../hooks/useAuth'
 import { toast } from 'sonner'
 import {
@@ -33,6 +32,11 @@ import {
   Focus,
   Navigation
 } from 'lucide-react'
+
+// Lazy load AuthDialog (only shown when user clicks sign in)
+const AuthDialog = lazy(() =>
+  import('./AuthDialog').then(m => ({ default: m.AuthDialog }))
+)
 
 interface NavbarProps {
   onLocateUser: () => void
@@ -68,7 +72,7 @@ export function Navbar({
   mapCenter,
   userLocation,
   pins = [],
-  onPinSelect,
+  // onPinSelect, // Available for future use
   onOpenNearestPanel,
   maxNearestLocations = 25,
   maxNearestDistance = 50
@@ -493,10 +497,12 @@ NavbarProps) {
         </nav>
       </TooltipProvider>
 
-      <AuthDialog
-        open={showAuthDialog}
-        onClose={() => setShowAuthDialog(false)}
-      />
+      <Suspense fallback={null}>
+        <AuthDialog
+          open={showAuthDialog}
+          onClose={() => setShowAuthDialog(false)}
+        />
+      </Suspense>
     </>
   )
 }
