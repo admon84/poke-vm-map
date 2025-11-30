@@ -30,7 +30,7 @@ export function AuthDialog({ open, onClose }: AuthDialogProps) {
       if (isSignUp) {
         await signUp(email, password)
         toast.success('Account created!', {
-          description: 'Welcome to Pokemon VM Map'
+          description: 'Welcome to PokeMap'
         })
       } else {
         await signIn(email, password)
@@ -70,8 +70,8 @@ export function AuthDialog({ open, onClose }: AuthDialogProps) {
           <DialogTitle>{isSignUp ? 'Create Account' : 'Sign In'}</DialogTitle>
           <DialogDescription>
             {isSignUp
-              ? 'Create an account to add and manage vending machines'
-              : 'Sign in to contribute to the Pokemon VM Map'}
+              ? 'Create an account to update the map'
+              : 'Sign in to contribute to PokeMap'}
           </DialogDescription>
         </DialogHeader>
 
@@ -95,18 +95,14 @@ export function AuthDialog({ open, onClose }: AuthDialogProps) {
               value={password}
               onChange={e => setPassword(e.target.value)}
               className='w-full px-3 py-2 border rounded-md'
-              placeholder='••••••••'
+              placeholder='••••••••••'
               required
               minLength={6}
             />
           </div>
 
           <Button type='submit' className='w-full' disabled={loading}>
-            {loading
-              ? 'Loading...'
-              : isSignUp
-              ? 'Create Account'
-              : 'Sign In'}
+            {loading ? 'Loading...' : isSignUp ? 'Create Account' : 'Sign In'}
           </Button>
         </form>
 
@@ -115,9 +111,7 @@ export function AuthDialog({ open, onClose }: AuthDialogProps) {
             <span className='w-full border-t' />
           </div>
           <div className='relative flex justify-center text-xs uppercase'>
-            <span className='bg-background px-2 text-muted-foreground'>
-              Or
-            </span>
+            <span className='bg-background px-2 text-muted-foreground'>Or</span>
           </div>
         </div>
 
@@ -144,4 +138,3 @@ export function AuthDialog({ open, onClose }: AuthDialogProps) {
     </Dialog>
   )
 }
-

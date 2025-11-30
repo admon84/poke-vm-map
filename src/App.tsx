@@ -39,6 +39,15 @@ function App() {
   //   1000 // Debounce
   // )
 
+  // Handle pin selection from navbar
+  const handlePinSelect = (pinId: string) => {
+    const pin = pins.find(p => p.id === pinId)
+    if (pin) {
+      setMapCenter(pin.location)
+      setMapZoom(16) // Zoom in to street level
+    }
+  }
+
   if (!apiKey) {
     return <div>Error: Google Maps API key not found</div>
   }
@@ -177,6 +186,9 @@ function App() {
         visiblePins={visiblePinsCount}
         currentZoom={currentZoom}
         mapCenter={currentMapCenter}
+        userLocation={userLocation}
+        pins={pins}
+        onPinSelect={handlePinSelect}
         // locationName={locationName}
       />
 
