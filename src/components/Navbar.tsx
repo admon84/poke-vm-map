@@ -136,9 +136,9 @@ NavbarProps) {
   const handleSignOut = async () => {
     try {
       await signOut()
-      toast.success('Signed out successfully')
+      toast.success('Signed out successfully', { id: 'sign-out' })
     } catch (error) {
-      toast.error('Failed to sign out')
+      toast.error('Failed to sign out', { id: 'sign-out-error' })
     }
   }
 
@@ -149,6 +149,7 @@ NavbarProps) {
       )}`
       navigator.clipboard.writeText(coordsText)
       toast.success('Coordinates copied!', {
+        id: 'coords-copied',
         description: coordsText
       })
     }

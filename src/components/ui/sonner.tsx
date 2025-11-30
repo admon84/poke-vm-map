@@ -3,7 +3,8 @@ import {
   Info,
   LoaderCircle,
   OctagonX,
-  TriangleAlert
+  TriangleAlert,
+  X
 } from 'lucide-react'
 import { Toaster as Sonner } from 'sonner'
 
@@ -18,12 +19,14 @@ const Toaster = ({ ...props }: ToasterProps) => {
     <Sonner
       theme={theme as ToasterProps['theme']}
       className='toaster group'
+      closeButton
       icons={{
         success: <CircleCheck className='h-4 w-4' />,
         info: <Info className='h-4 w-4' />,
         warning: <TriangleAlert className='h-4 w-4' />,
         error: <OctagonX className='h-4 w-4' />,
-        loading: <LoaderCircle className='h-4 w-4 animate-spin' />
+        loading: <LoaderCircle className='h-4 w-4 animate-spin' />,
+        close: <X className='h-4 w-4' />
       }}
       toastOptions={{
         classNames: {
@@ -33,7 +36,9 @@ const Toaster = ({ ...props }: ToasterProps) => {
           actionButton:
             'group-[.toast]:bg-primary group-[.toast]:text-primary-foreground',
           cancelButton:
-            'group-[.toast]:bg-muted group-[.toast]:text-muted-foreground'
+            'group-[.toast]:bg-muted group-[.toast]:text-muted-foreground',
+          closeButton:
+            'group-[.toast]:!left-auto group-[.toast]:!right-[-5px] group-[.toast]:!top-[10px] group-[.toast]:bg-background group-[.toast]:!border-none group-[.toast]:hover:bg-muted group-[.toast]:text-foreground'
         }
       }}
       {...props}

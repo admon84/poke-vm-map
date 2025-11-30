@@ -27,6 +27,7 @@ function App() {
   const [currentZoom, setCurrentZoom] = useState(5)
   const [visiblePinsCount, setVisiblePinsCount] = useState(0)
   const [selectedPinId, setSelectedPinId] = useState<string | null>(null)
+  const [locationPulseTrigger, setLocationPulseTrigger] = useState(0)
 
   // Constants for nearest locations filtering
   const maxNearestLocations = 25
@@ -87,8 +88,13 @@ function App() {
   }
 
   const handleLocateUser = async () => {
+    // Clear any selected pin/InfoWindow
+    setSelectedPinId(null)
+
     if ('geolocation' in navigator) {
-      const loadingToast = toast.loading('Finding your location...')
+      const loadingToast = toast.loading('Finding your location...', {
+        id: 'find-location'
+      })
 
       navigator.geolocation.getCurrentPosition(
         position => {
@@ -100,7 +106,12 @@ function App() {
           setUserLocation(userLocation)
           setMapCenter(userLocation)
           setMapZoom(13)
+
+          // Trigger the pulse animation by incrementing counter
+          setLocationPulseTrigger(prev => prev + 1)
+
           toast.success('Location found', {
+            id: 'location-found',
             description: 'Map centered on your location'
           })
         },
@@ -113,7 +124,8 @@ function App() {
               console.log('Trying IP-based geolocation fallback...')
               toast.dismiss(loadingToast)
               const ipLoadingToast = toast.loading(
-                'Trying IP-based location...'
+                'Trying IP-based location...',
+                { id: 'find-location-ip' }
               )
 
               const response = await fetch('https://ipapi.co/json/')
@@ -128,7 +140,12 @@ function App() {
                 setUserLocation(ipLocation)
                 setMapCenter(ipLocation)
                 setMapZoom(12)
+
+                // Trigger the pulse animation by incrementing counter
+                setLocationPulseTrigger(prev => prev + 1)
+
                 toast.success(`Located in ${data.city}, ${data.region}`, {
+                  id: 'location-found',
                   description: 'Using IP-based location (approximate)'
                 })
                 return
@@ -159,6 +176,7 @@ function App() {
           }
 
           toast.error('Unable to get your location', {
+            id: 'location-error',
             description: errorMessage
           })
         },
@@ -170,6 +188,7 @@ function App() {
       )
     } else {
       toast.error('Geolocation not supported', {
+        id: 'geolocation-unsupported',
         description: 'Your browser does not support geolocation'
       })
     }
@@ -257,6 +276,7 @@ function App() {
         }
         selectedPinId={selectedPinId}
         onPinSelectionChange={setSelectedPinId}
+        locationPulseTrigger={locationPulseTrigger}
       />
 
       {/* Left Panel - Nearest Locations */}

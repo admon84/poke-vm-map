@@ -24,6 +24,7 @@ interface MapProps {
   onOpenDetails?: (pinId: string) => void
   selectedPinId?: string | null
   onPinSelectionChange?: (pinId: string | null) => void
+  locationPulseTrigger?: number
 }
 
 interface Bounds {
@@ -110,7 +111,8 @@ export function Map({
   onCenterChange,
   onOpenDetails,
   selectedPinId,
-  onPinSelectionChange
+  onPinSelectionChange,
+  locationPulseTrigger = 0
 }: MapProps) {
   const [selectedMarkerId, setSelectedMarkerId] = useState<string | null>(null)
   const [bounds, setBounds] = useState<Bounds | null>(null)
@@ -191,7 +193,12 @@ export function Map({
           />
 
           {/* User location marker */}
-          {userLocation && <UserLocationMarker position={userLocation} />}
+          {userLocation && (
+            <UserLocationMarker
+              position={userLocation}
+              pulseTrigger={locationPulseTrigger}
+            />
+          )}
 
           {!pinsLoading &&
             visiblePins.map(pin => (
