@@ -2,10 +2,14 @@ import { Map } from './components/Map'
 import { Navbar } from './components/Navbar'
 import { Toaster } from '@/components/ui/sonner'
 import { toast } from 'sonner'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useGeoJSONPins } from './hooks/useGeoJSONPins'
 import { useAuth } from './hooks/useAuth'
 import { useMapColorScheme } from './hooks/useMapColorScheme'
+import { LeftPanel } from './components/panels/LeftPanel'
+import { RightPanel } from './components/panels/RightPanel'
+import { NearestLocations } from './components/panels/NearestLocations'
+import { usePanelState } from './hooks/usePanelState'
 // import { useReverseGeocode } from './hooks/useReverseGeocode'
 
 function App() {
@@ -23,6 +27,10 @@ function App() {
   const [currentZoom, setCurrentZoom] = useState(5)
   const [visiblePinsCount, setVisiblePinsCount] = useState(0)
 
+  // Constants for nearest locations filtering
+  const maxNearestLocations = 25
+  const maxNearestDistance = 50 // miles
+
   // Use GeoJSON data for Pokemon vending machines
   const { pins, loading: pinsLoading, error: pinsError } = useGeoJSONPins()
   const { user, loading: authLoading } = useAuth()
@@ -31,6 +39,7 @@ function App() {
     effectiveScheme,
     setPreference: setMapColorScheme
   } = useMapColorScheme()
+  const [panelState, panelActions] = usePanelState()
 
   // Get location name for current map center (only when zoomed in enough)
   // const { locationName } = useReverseGeocode(
@@ -39,14 +48,37 @@ function App() {
   //   1000 // Debounce
   // )
 
-  // Handle pin selection from navbar
+  // Handle pin selection from navbar or panels
   const handlePinSelect = (pinId: string) => {
     const pin = pins.find(p => p.id === pinId)
     if (pin) {
       setMapCenter(pin.location)
-      setMapZoom(16) // Zoom in to street level
+      setMapZoom(15) // Zoom in to street level
     }
   }
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // ESC to close panels
+      if (e.key === 'Escape') {
+        if (panelState.rightPanel.isOpen) {
+          panelActions.closeRightPanel()
+        } else if (panelState.leftPanel.isOpen) {
+          panelActions.closeLeftPanel()
+        }
+      }
+
+      // CMD/CTRL + N to toggle nearest panel
+      if ((e.metaKey || e.ctrlKey) && e.key === 'n') {
+        e.preventDefault()
+        panelActions.toggleLeftPanel('nearest')
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [panelState, panelActions])
 
   if (!apiKey) {
     return <div>Error: Google Maps API key not found</div>
@@ -189,6 +221,9 @@ function App() {
         userLocation={userLocation}
         pins={pins}
         onPinSelect={handlePinSelect}
+        onOpenNearestPanel={() => panelActions.openLeftPanel('nearest')}
+        maxNearestLocations={maxNearestLocations}
+        maxNearestDistance={maxNearestDistance}
         // locationName={locationName}
       />
 
@@ -215,7 +250,48 @@ function App() {
         onZoomChange={setCurrentZoom}
         onVisiblePinsChange={setVisiblePinsCount}
         onCenterChange={setCurrentMapCenter}
+        onOpenDetails={pinId =>
+          panelActions.openRightPanel(pinId, 'location-details')
+        }
       />
+
+      {/* Left Panel - Nearest Locations */}
+      <LeftPanel
+        isOpen={panelState.leftPanel.isOpen}
+        activeContent={panelState.leftPanel.activeContent}
+        onClose={panelActions.closeLeftPanel}
+      >
+        {panelState.leftPanel.activeContent === 'nearest' && userLocation && (
+          <NearestLocations
+            userLocation={userLocation}
+            pins={pins}
+            onPinSelect={handlePinSelect}
+            maxResults={maxNearestLocations}
+            maxDistance={maxNearestDistance}
+          />
+        )}
+      </LeftPanel>
+
+      {/* Right Panel - Location Details */}
+      <RightPanel
+        isOpen={panelState.rightPanel.isOpen}
+        activeContent={panelState.rightPanel.activeContent}
+        locationId={panelState.rightPanel.locationId}
+        isLoading={panelState.rightPanel.isLoading}
+        onClose={panelActions.closeRightPanel}
+      >
+        {panelState.rightPanel.locationId && (
+          <div className='p-4'>
+            <p className='text-slate-300'>
+              Details for location: {panelState.rightPanel.locationId}
+            </p>
+            <p className='text-slate-400 text-sm mt-2'>
+              Extended location details will be implemented in Phase 3
+            </p>
+          </div>
+        )}
+      </RightPanel>
+
       <Toaster position='bottom-center' />
     </div>
   )

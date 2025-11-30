@@ -21,6 +21,7 @@ interface MapProps {
   onZoomChange?: (zoom: number) => void
   onVisiblePinsChange?: (visibleCount: number) => void
   onCenterChange?: (center: { lat: number; lng: number }) => void
+  onOpenDetails?: (pinId: string) => void
 }
 
 interface Bounds {
@@ -104,7 +105,8 @@ export function Map({
   colorScheme,
   onZoomChange,
   onVisiblePinsChange,
-  onCenterChange
+  onCenterChange,
+  onOpenDetails
 }: MapProps) {
   const [selectedMarkerId, setSelectedMarkerId] = useState<string | null>(null)
   const [bounds, setBounds] = useState<Bounds | null>(null)
@@ -173,6 +175,7 @@ export function Map({
                 isSelected={selectedMarkerId === pin.id}
                 onSelect={() => setSelectedMarkerId(pin.id)}
                 onClose={() => setSelectedMarkerId(null)}
+                onOpenDetails={onOpenDetails}
               />
             ))}
         </GoogleMap>
